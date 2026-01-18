@@ -62,4 +62,4 @@ style :
 	clang-format -style=webkit -dump-config > .clang-format
 
 bak :
-	git archive --format=tar.gz --prefix=nativetest/ --output ../nativetest.tar.gz master
+	git archive --format=tar.gz --prefix=nativehal/ --output ../nativehal.tar.gz master
