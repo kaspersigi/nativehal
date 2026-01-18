@@ -35,29 +35,17 @@ CLANGXX_LINK_FLAGS = -static-libstdc++
 TIDY_FLAGS = -- $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
 
 .PHONY : all
-all : nativehal
-nativehal : nativehal.o module.o device.o
-	$(CXX) nativehal.o ./module/CameraModule.o ./device/Camera3Device.o -o nativehal $(CLANGXX_LINK_FLAGS) $(LIBS)
-	rm -v nativehal.o
-	$(MAKE) -C module clean
-	$(MAKE) -C device clean
-nativehal.o : nativehal.cc
-	$(CXX) nativehal.cc -c $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
-module.o :
-	$(MAKE) -C module
-device.o :
-	$(MAKE) -C device
+all : Camera3Device.o
+Camera3Device.o : Camera3Device.cc Camera3Device.h
+	$(CXX) Camera3Device.cc -c $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
 format :
-	$(FORMAT) nativehal.cc -style=file -i
-	$(MAKE) -C module format
-	$(MAKE) -C device format
+	$(FORMAT) Camera3Device.cc -style=file -i
+	$(FORMAT) Camera3Device.h -style=file -i
 clean :
-	rm -v nativehal
+	rm -v Camera3Device.o
 scan :
 	$(SCAN) make
 tidy :
-	$(TIDY) nativehal.cc $(TIDY_FLAGS)
-	$(MAKE) -C module tidy
-	$(MAKE) -C device tidy
+	$(TIDY) Camera3Device.cc $(TIDY_FLAGS)
 check :
 	valgrind --tool=memcheck --leak-check=full --show-reachable=yes --error-limit=no ./$(TRG)
