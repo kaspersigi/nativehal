@@ -49,6 +49,15 @@ device.o :
 	$(MAKE) -C device
 format :
 	$(FORMAT) nativehal.cc -style=file -i
+	$(FORMAT) include/camera_common.h -style=file -i
+	$(FORMAT) include/camera_metadata_tags.h -style=file -i
+	$(FORMAT) include/camera_metadata.h -style=file -i
+	$(FORMAT) include/camera_vendor_tags.h -style=file -i
+	$(FORMAT) include/camera3.h -style=file -i
+	$(FORMAT) include/graphics.h -style=file -i
+	$(FORMAT) include/hardware.h -style=file -i
+	$(FORMAT) include/log.h -style=file -i
+	$(FORMAT) include/native_handle.h -style=file -i
 	$(MAKE) -C module format
 	$(MAKE) -C device format
 clean :

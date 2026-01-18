@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include "camera_vendor_tags.h"
+#include <stdint.h>
 
 typedef uint32_t metadata_uptrdiff_t;
 typedef uint32_t metadata_size_t;

@@ -36,7 +36,13 @@ constexpr char HAL_MODULE_INFO[] = "HMI";
 // Qcom HAL 库路径
 constexpr char HAL_DRIVER_PATH[] = "/vendor/lib64/hw/camera.qcom.so";
 
-CameraModule::~CameraModule() { }
+CameraModule::~CameraModule()
+{
+    if (nullptr != camera_handle) {
+        dlclose(camera_handle);
+        camera_handle = nullptr;
+    }
+}
 
 int CameraModule::Setup()
 {
@@ -45,14 +51,34 @@ int CameraModule::Setup()
         LOGE("dlopen %s failed!", HAL_DRIVER_PATH);
         return -1;
     }
+    camera_handle = handle;
 
     camera_module_t* module = (camera_module_t*)dlsym(handle, HAL_MODULE_INFO);
     if (!module) {
         LOGE("dlsym %s failed!", HAL_MODULE_INFO);
-        dlclose(handle);
         return -1;
     }
     camera_module = module;
+
+    if (nullptr != camera_module->get_vendor_tag_ops) {
+        camera_module->get_vendor_tag_ops(&vendor_tag_ops);
+    }
+
+    if (nullptr != camera_module->init) {
+        camera_module->init();
+    }
+
+    int number = -1;
+    if (nullptr != camera_module->get_number_of_cameras) {
+        number = camera_module->get_number_of_cameras();
+    }
+    if (-1 >= number) {
+        LOGE("get_number_of_cameras failed!");
+        return -1;
+    } else {
+        number_of_cameras = number;
+        LOGI("number_of_cameras: %d", number_of_cameras);
+    }
 
     return 0;
 }
