@@ -80,5 +80,14 @@ int CameraModule::Setup()
         LOGI("number_of_cameras: %d", number_of_cameras);
     }
 
+    if (nullptr != camera_module->set_callbacks) {
+        camera_module->set_callbacks(static_cast<const camera_module_callbacks_t*>(this));
+    }
+
     return 0;
+}
+
+const camera_module_t* CameraModule::GetCamModule() const
+{
+    return camera_module;
 }

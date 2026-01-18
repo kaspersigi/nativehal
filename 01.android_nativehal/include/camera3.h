@@ -2,6 +2,7 @@
 
 #include "camera_metadata.h"
 #include "graphics.h"
+#include "hardware.h"
 #include "native_handle.h"
 #include <stdint.h>
 
@@ -129,3 +130,47 @@ typedef struct camera3_callback_ops {
         uint32_t num_buffers,
         const camera3_stream_buffer_t* const* buffers);
 } camera3_callback_ops_t;
+
+typedef struct camera3_stream_configuration {
+    uint32_t num_streams;
+    camera3_stream_t** streams;
+    uint32_t operation_mode;
+    const camera_metadata_t* session_parameters;
+} camera3_stream_configuration_t;
+
+typedef struct camera3_stream_buffer_set {
+    camera3_stream_t* stream;
+    uint32_t num_buffers;
+    buffer_handle_t** buffers;
+} camera3_stream_buffer_set_t;
+
+typedef struct camera3_device_ops {
+    int (*initialize)(const struct camera3_device*,
+        const camera3_callback_ops_t* callback_ops);
+    int (*configure_streams)(const struct camera3_device*,
+        camera3_stream_configuration_t* stream_list);
+    int (*register_stream_buffers)(const struct camera3_device*,
+        const camera3_stream_buffer_set_t* buffer_set);
+    const camera_metadata_t* (*construct_default_request_settings)(
+        const struct camera3_device*,
+        int type);
+    int (*process_capture_request)(const struct camera3_device*,
+        camera3_capture_request_t* request);
+    void (*get_metadata_vendor_tag_ops)(const struct camera3_device*,
+        vendor_tag_query_ops_t* ops);
+    void (*dump)(const struct camera3_device*, int fd);
+    int (*flush)(const struct camera3_device*);
+    void (*signal_stream_flush)(const struct camera3_device*,
+        uint32_t num_streams,
+        const camera3_stream_t* const* streams);
+    int (*is_reconfiguration_required)(const struct camera3_device*,
+        const camera_metadata_t* old_session_params,
+        const camera_metadata_t* new_session_params);
+    void* reserved[6];
+} camera3_device_ops_t;
+
+typedef struct camera3_device {
+    hw_device_t common;
+    camera3_device_ops_t* ops;
+    void* priv;
+} camera3_device_t;

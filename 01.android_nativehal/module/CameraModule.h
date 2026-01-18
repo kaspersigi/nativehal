@@ -10,6 +10,7 @@ public:
     ~CameraModule();
 
     int Setup();
+    const camera_module_t* GetCamModule() const;
 
 private:
     void* camera_handle = nullptr;
