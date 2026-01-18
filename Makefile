@@ -36,33 +36,27 @@ CLANGXX_LINK_FLAGS = -static-libstdc++
 TIDY_FLAGS = -- $(C_FLAGS) $(DEBUG)
 
 .PHONY : all
-all : template android_c android_cpp
+all : template android_nativehal
 template :
 	$(MAKE) -C 00.template
-android_c :
-	$(MAKE) -C 01.android_c
-android_cpp :
-	$(MAKE) -C 02.android_cpp
+android_nativehal :
+	$(MAKE) -C 01.android_nativehal
 
 format :
 	$(MAKE) -C 00.template format
-	$(MAKE) -C 01.android_c format
-	$(MAKE) -C 02.android_cpp format
+	$(MAKE) -C 01.android_nativehal format
 
 clean :
 	$(MAKE) -C 00.template clean
-	$(MAKE) -C 01.android_c clean
-	$(MAKE) -C 02.android_cpp clean
+	$(MAKE) -C 01.android_nativehal clean
 
 scan :
 	$(MAKE) -C 00.template scan
-	$(MAKE) -C 01.android_c scan
-	$(MAKE) -C 02.android_cpp scan
+	$(MAKE) -C 01.android_nativehal scan
 
 tidy :
 	$(MAKE) -C 00.template tidy
-	$(MAKE) -C 01.android_c tidy
-	$(MAKE) -C 02.android_cpp tidy
+	$(MAKE) -C 01.android_nativehal tidy
 
 style :
 	clang-format -style=webkit -dump-config > .clang-format

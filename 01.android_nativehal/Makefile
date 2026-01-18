@@ -1,10 +1,10 @@
 ###########################################
-#Makefile for my Android C programs
+#Makefile for my Android C++ programs
 ###########################################
 
-TRG = main
-OBJ = main.o
-SRC = main.c
+TRG = nativehal
+OBJ = nativehal.o
+SRC = nativehal.cc
 NDK = /mnt/develop/android-ndk-r27d
 ARCH = $(shell uname -m)
 PLATFORM = darwin
@@ -32,14 +32,14 @@ CLANG_FLAGS = -nostdlib
 CLANG_LINK_FLAGS = /usr/lib/llvm$(LLVM)/lib/libllvmlibc.a -static
 CLANGXX_FLAGS = -stdlib=libc++
 CLANGXX_LINK_FLAGS = -static-libstdc++
-TIDY_FLAGS = -- $(C_FLAGS) $(DEBUG)
+TIDY_FLAGS = -- $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
 
 .PHONY : all
 $(TRG) : $(OBJ)
-	$(CC) $(OBJ) -o $(TRG)
+	$(CXX) $(OBJ) -o $(TRG) $(CLANGXX_LINK_FLAGS) $(LIBS)
 	rm -v $(OBJ)
 $(OBJ) : $(SRC)
-	$(CC) $(SRC) -c $(C_FLAGS) $(DEBUG)
+	$(CXX) $(SRC) -c $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
 format :
 	$(FORMAT) $(SRC) -style=file -i
 clean :
