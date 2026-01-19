@@ -35,43 +35,17 @@ CLANGXX_LINK_FLAGS = -static-libstdc++
 TIDY_FLAGS = -- $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
 
 .PHONY : all
-all : nativehal
-nativehal : nativehal.o module.o device.o stream.o
-	$(CXX) nativehal.o ./module/CameraModule.o ./device/Camera3Device.o ./stream/Camera3Stream.o -o nativehal $(CLANGXX_LINK_FLAGS) $(LIBS)
-	rm -v nativehal.o
-	$(MAKE) -C module clean
-	$(MAKE) -C device clean
-	$(MAKE) -C stream clean
-nativehal.o : nativehal.cc
-	$(CXX) nativehal.cc -c $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
-module.o :
-	$(MAKE) -C module
-device.o :
-	$(MAKE) -C device
-stream.o :
-	$(MAKE) -C stream
+all : Camera3Stream.o
+Camera3Stream.o : Camera3Stream.cc Camera3Stream.h
+	$(CXX) Camera3Stream.cc -c $(CXX_FLAGS) $(CLANGXX_FLAGS) $(DEBUG)
 format :
-	$(FORMAT) nativehal.cc -style=file -i
-	$(FORMAT) include/camera_common.h -style=file -i
-	$(FORMAT) include/camera_metadata_tags.h -style=file -i
-	$(FORMAT) include/camera_metadata.h -style=file -i
-	$(FORMAT) include/camera_vendor_tags.h -style=file -i
-	$(FORMAT) include/camera3.h -style=file -i
-	$(FORMAT) include/graphics.h -style=file -i
-	$(FORMAT) include/hardware.h -style=file -i
-	$(FORMAT) include/log.h -style=file -i
-	$(FORMAT) include/native_handle.h -style=file -i
-	$(MAKE) -C module format
-	$(MAKE) -C device format
-	$(MAKE) -C stream format
+	$(FORMAT) Camera3Stream.cc -style=file -i
+	$(FORMAT) Camera3Stream.h -style=file -i
 clean :
-	rm -v nativehal
+	rm -v Camera3Stream.o
 scan :
 	$(SCAN) make
 tidy :
-	$(TIDY) nativehal.cc $(TIDY_FLAGS)
-	$(MAKE) -C module tidy
-	$(MAKE) -C device tidy
-	$(MAKE) -C stream tidy
+	$(TIDY) Camera3Stream.cc $(TIDY_FLAGS)
 check :
 	valgrind --tool=memcheck --leak-check=full --show-reachable=yes --error-limit=no ./$(TRG)
